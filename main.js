@@ -7,24 +7,18 @@ var window_width = window.innerWidth;
 canvas.width = window_width;
 canvas.height = window_height;
 
-canvas.addEventListener("mousemove", (e) => {
-  c1.x = e.clientX + 30;
-  if (e.clientX < 300) c1.x = 300;
-  else if (e.clientX > 1200) c1.x = 1200;
-});
-
 var background = new Image();
 background.src = "./background.webp";
+
+let c1 = new Coche();
+let camiones = [];
+let carretera = new Carretera();
+let moneda = new Moneda();
 
 // Make sure the image is loaded first otherwise nothing will draw.
 background.onload = function () {
   context.drawImage(background, 0, 0);
 };
-
-let c1 = new Coche();
-let camiones = [];
-
-let carretera = new Carretera();
 
 context.font = "48px serif";
 context.strokeText("Hello world", 10, 50);
@@ -50,26 +44,41 @@ function getDistance(camiones, cocheX, cocheY) {
   return distancias;
 }
 
+canvas.addEventListener("mousemove", (e) => {
+  c1.x = e.clientX + 30;
+  if (e.clientX < 300) c1.x = 300;
+  else if (e.clientX > 1200) c1.x = 1200;
+});
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
 let update = () => {
-  requestAnimationFrame(update);
-  context.clearRect(0, 0, window_width, window_height);
+  context.clearRect(0, 0, window_width, window_height); //Para limpiar el canvas cada frame.
   context.drawImage(background, 0, 0);
   carretera.update();
   context.font = "50px sans-serif";
   context.fillStyle = "#FFFFFF";
   context.fillText("Vida", 150, 300);
   context.fillText(`${c1.hits}`, 200, 360);
+  //Generamos moneda con un 20% de prob.
+  //moneda.update();
 
   camiones.forEach((camion) => camion.update());
   c1.update();
 
-  if (getDistance(camiones, c1.x, c1.y).some((dist) => dist < 100)) {
-    //console.log("entro");
+  //Comprobamos colisión entre el coche y los camiones.
+  if (getDistance(camiones, c1.x, c1.y).some((dist) => dist < 60)) {
     c1.hits -= 1;
+    if (c1.hits <= 0) {
+      document.body?.removeChild(canvas);
+    }
   }
-  // if (c1.hits <= 0) {
-  //   context.fillText(`Has perdido`, 200, 360);
-  // }
+
+  //Generamos siguiente frame
+  requestAnimationFrame(update);
 };
 
 update();

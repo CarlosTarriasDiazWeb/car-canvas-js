@@ -64,6 +64,7 @@ let draw = () => {
   for (let i = 0; i < 3; i++) {
     camiones[i].draw(context);
   }
+  moneda.draw(context);
 
   //Pintamos el coche.
   c1.draw(context);
@@ -74,6 +75,7 @@ let update = () => {
   context.clearRect(0, 0, window_width, window_height); //Para limpiar el canvas cada frame.
   context.drawImage(background, 0, 0);
   carretera.update();
+
   context.font = "50px sans-serif";
   context.fillStyle = "#FFFFFF";
   context.fillText("Vida", 150, 300);
@@ -82,6 +84,7 @@ let update = () => {
   //moneda.update();
 
   camiones.forEach((camion) => camion.update());
+  moneda.update();
   c1.update();
 
   //Si hay alguna colisión entre el coche y un camión restamos puntos de vida.

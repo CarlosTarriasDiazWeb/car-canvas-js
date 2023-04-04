@@ -64,23 +64,25 @@ class Camion {
 
 class Moneda {
   constructor() {
-    this.x = Math.random() * (1200 - 400) + 400;
-    this.y = 5;
-    this.speedY = 2;
+    this.x = Math.random() * (950 - 600) + 600;
+    this.y = -10;
+    this.speedY = 10;
+    this.speedX = 2;
+    this.img = new Image();
+    this.img.src = "./coin.jpg";
   }
 
   draw(context) {
-    if (Math.random() > 0.9) {
-      console.log("genero");
-      context.fillStyle = "yellow";
-      context.beginPath();
-      context.arc(this.x, this.y, 20, 0, 2 * Math.PI);
-      context.stroke();
-    }
+    context.drawImage(this.img, 40, 40, 120, 100, this.x, this.y, 50, 50);
   }
 
   update() {
     this.draw(context);
+    if (this.y > 1000) {
+      this.y = -10;
+      this.x = Math.random() * (950 - 600) + 600;
+    }
     this.y += this.speedY;
+    this.x += this.speedX;
   }
 }

@@ -1,40 +1,30 @@
+// Creamos canvas para gráficos 2D
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
+//Establecemos que el tamaño del canvas sea toda la pantalla.
 var window_height = window.innerHeight;
 var window_width = window.innerWidth;
 
 canvas.width = window_width;
 canvas.height = window_height;
 
-var background = new Image();
-background.src = "./background.webp";
-
+//Creamos los objetos que intervienen en el juego.
 let c1 = new Coche();
 let camiones = [];
 let carretera = new Carretera();
 let moneda = new Moneda();
 
-// Make sure the image is loaded first otherwise nothing will draw.
+//Establecesmos y dibujamos imagen pixel-art de fondo
+var background = new Image();
+background.src = "./background.webp";
+
+//Hay que asegurarse que la imagen se cargue primero si no, no se pinta nada.
 background.onload = function () {
   context.drawImage(background, 0, 0);
 };
 
-context.font = "48px serif";
-context.strokeText("Hello world", 10, 50);
-
-carretera.draw(context);
-
-for (let i = 0; i < 3; i++) {
-  camiones.push(new Camion());
-}
-
-for (let i = 0; i < 3; i++) {
-  camiones[i].draw(context);
-}
-
-c1.draw(context);
-
+//Para calcular la distancia entre
 function getDistance(camiones, cocheX, cocheY) {
   const distancias = [];
   camiones.forEach((cam) =>
@@ -44,17 +34,42 @@ function getDistance(camiones, cocheX, cocheY) {
   return distancias;
 }
 
+//Para que el control del coche dependa de la posición del mouse en cada momento.
 canvas.addEventListener("mousemove", (e) => {
   c1.x = e.clientX + 30;
-  if (e.clientX < 300) c1.x = 300;
-  else if (e.clientX > 1200) c1.x = 1200;
+  if (e.clientX < 500) c1.x = 500;
+  else if (e.clientX > 950) c1.x = 950;
 });
 
+//Evento para que el canvas no se recorte al modificar tamaño de la ventana.
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
 
+//Para pintar los objetos del juego.
+let draw = () => {
+  //Pintamos etiqueta de texto que muestra la vida restante.
+  context.font = "48px serif";
+  context.strokeText("Hello world", 10, 50);
+
+  //Pintamos carretera.
+  carretera.draw(context);
+
+  //Pintamos los camiones en posiciones aleatorias.
+  for (let i = 0; i < 3; i++) {
+    camiones.push(new Camion());
+  }
+
+  for (let i = 0; i < 3; i++) {
+    camiones[i].draw(context);
+  }
+
+  //Pintamos el coche.
+  c1.draw(context);
+};
+
+//Para volver a dibujar los objetos (y hacer las comprobaciones necesarias) del juego cada nuevo frame.
 let update = () => {
   context.clearRect(0, 0, window_width, window_height); //Para limpiar el canvas cada frame.
   context.drawImage(background, 0, 0);
@@ -69,8 +84,8 @@ let update = () => {
   camiones.forEach((camion) => camion.update());
   c1.update();
 
-  //Comprobamos colisión entre el coche y los camiones.
-  if (getDistance(camiones, c1.x, c1.y).some((dist) => dist < 60)) {
+  //Si hay alguna colisión entre el coche y un camión restamos puntos de vida.
+  if (getDistance(camiones, c1.x, c1.y).some((dist) => dist < 70)) {
     c1.hits -= 1;
     if (c1.hits <= 0) {
       document.body?.removeChild(canvas);
@@ -81,4 +96,5 @@ let update = () => {
   requestAnimationFrame(update);
 };
 
+draw();
 update();

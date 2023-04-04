@@ -1,16 +1,16 @@
-var high = new Image();
-high.src = "./highway.png";
-
 class Coche {
   constructor() {
     this.x = window_width / 2.5;
     this.y = window_height - 100;
     this.speedX = 2;
     this.hits = 100;
+    this.img = new Image();
+    this.img.src = "./player.png";
   }
   draw(context) {
-    context.fillStyle = "green";
-    context.fillRect(this.x, this.y, 50, 60);
+    // context.fillStyle = "green";
+    // context.fillRect(this.x, this.y, 50, 60);
+    context.drawImage(this.img, this.x, this.y, 50, 60);
   }
   update() {
     this.draw(context);
@@ -19,38 +19,44 @@ class Coche {
 
 class Carretera {
   constructor() {
-    this.x = window_width / 3.5;
+    this.x = 500;
     this.y = 0;
+    this.alto = window_height;
+    this.img = new Image();
+    this.img.src = "./highway.png";
+    this.speedY = 5;
   }
   draw(context) {
-    // var high = new Image();
-    // high.src = "./highway.png";
-    //context.drawImage(high, 600, window_height * 10);
-    context.fillStyle = "gray";
-    context.fillRect(this.x, this.y, 700, window_height * 10);
+    context.drawImage(this.img, 500, this.y - this.alto, this.x, this.alto * 3);
+    // context.fillStyle = "gray";
+    // context.fillRect(this.x, this.y, 700, window_height * 10);
   }
   update() {
     this.draw(context);
+    this.y = (this.y + this.speedY) % this.alto;
   }
 }
 
 class Camion {
   constructor() {
-    this.x = Math.random() * (1200 - 400) + 400 + 3;
-    this.y = 5;
-    this.speedY = 5;
+    this.x = Math.random() * (950 - 600) + 600;
+    this.y = 2;
+    this.speedY = 8;
+    this.img = new Image();
+    this.img.src = "./truck.jpg";
   }
 
   draw(context) {
-    context.fillStyle = "red";
-    context.fillRect(this.x, this.y, 100, 150);
+    // context.fillStyle = "red";
+    // context.fillRect(this.x, this.y, 100, 150);
+    context.drawImage(this.img, 40, 30, 140, 150, this.x, this.y, 80, 120);
   }
 
   update() {
     this.draw(context);
     if (this.y > 1000) {
-      this.y = 100;
-      this.x = Math.random() * (1000 - 500) + 400;
+      this.y = 3;
+      this.x = Math.random() * (950 - 600) + 600;
     }
     this.y += this.speedY;
   }

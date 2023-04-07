@@ -1,3 +1,4 @@
+//Representa el jugador. Sólo se puede mover en la dirección X en los límites marcados.
 class Coche {
   constructor() {
     this.x = window_width / 2.5;
@@ -17,6 +18,7 @@ class Coche {
   }
 }
 
+//Representa la carretera de fondo. Se va desplazando para crear la ilusión de movimiento del jugador.
 class Carretera {
   constructor() {
     this.x = 500;
@@ -33,10 +35,11 @@ class Carretera {
   }
   update() {
     this.draw(context);
-    this.y = (this.y + this.speedY) % this.alto;
+    this.y = (this.y + this.speedY) % (50 + this.alto);
   }
 }
 
+//Representa un objeto camión con el que puede chocar el jugador. Si se choca con alguno vamos perdiendo vidas.
 class Camion {
   constructor() {
     this.x = Math.random() * (950 - 600) + 600;
@@ -62,12 +65,13 @@ class Camion {
   }
 }
 
+//Representa un objeto moneda con el que puede chocar el jugador. Si se toca la moneda ganamos puntos de vida.
 class Moneda {
   constructor() {
     this.x = Math.random() * (950 - 600) + 600;
     this.y = -10;
     this.speedY = 10;
-    this.speedX = 2;
+    this.speedX = 4;
     this.img = new Image();
     this.img.src = "./coin.jpg";
   }
@@ -83,6 +87,6 @@ class Moneda {
       this.x = Math.random() * (950 - 600) + 600;
     }
     this.y += this.speedY;
-    this.x += this.speedX;
+    this.x += Math.random() * (5 + 5) - 5;
   }
 }

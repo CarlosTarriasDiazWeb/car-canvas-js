@@ -56,8 +56,8 @@ window.addEventListener("resize", () => {
 //Para pintar los objetos del juego.
 let draw = () => {
   //Pintamos etiqueta de texto que muestra la vida restante.
-  context.font = "48px serif";
-  context.strokeText("Hello world", 10, 50);
+
+  context.strokeText("Puntos", 1000, 50);
 
   //Pintamos carretera.
   carretera.draw(context);
@@ -85,7 +85,9 @@ let update = () => {
   context.font = "50px sans-serif";
   context.fillStyle = "#FFFFFF";
   context.fillText("Vida", 150, 300);
-  context.fillText(`${c1.hits}`, 200, 360);
+  context.fillText(`${c1.hits}`, 180, 360);
+  context.fillText("Puntos", 1200, 300);
+  context.fillText(`${c1.points}`, 1250, 360);
 
   camiones.forEach((camion) => camion.update());
   moneda?.update();
@@ -99,11 +101,20 @@ let update = () => {
   //Si hay colisión con la moneda, recuperamos vida.
   if (coinCollision(c1.x, c1.y, moneda)) {
     c1.hits += 1;
+    moneda = null;
   }
 
-  //Si nos hemos quedado sin vida eliminamos canvas
+  //Si nos hemos quedado sin vida eliminamos canvas y añadimos puntuación conseguida al ranking.
   if (c1.hits <= 0) {
     document.body?.removeChild(canvas);
+    guardarUltimaPuntuacion();
+    //Pintamos ranking
+    document.body.innerHTML = "<ul>";
+    Array.from(JSON.parse(localStorage?.getItem("score"))).forEach((score, index) => {
+      document.body.innerHTML += `<li>Jugador ${index + 1} : ${score}</li>`;
+    });
+    document.body.innerHTML += "</ul>";
+    return;
   }
 
   //Generamos siguiente frame
@@ -124,8 +135,22 @@ const toggleMoneda = () => {
   else moneda = new Moneda();
 };
 
+//Para guardar ranking de puntuación.
+const guardarUltimaPuntuacion = () => {
+  let v = JSON.parse(localStorage.getItem("score"));
+  if (localStorage.getItem("score") === null) {
+    localStorage.setItem("score", JSON.stringify([c1.points]));
+  } else {
+    v.push(c1.points);
+    localStorage.setItem("score", JSON.stringify(v));
+  }
+};
+
 //Añadimos un nuevo camión cada diez segundos
 setInterval(anyadirCamion, 10000);
 
 //Hacemos que la moneda aparazca/desaparezca cada diez segundos.
 setInterval(toggleMoneda, 10000);
+
+//Hacemos que suba 2 puntos cada 5 segundos
+setInterval(() => (c1.points += 2), 5000);

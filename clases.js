@@ -5,6 +5,7 @@ class Coche {
     this.y = window_height - 100;
     this.speedX = 2;
     this.hits = 100;
+    this.points = 0;
     this.img = new Image();
     this.img.src = "./player.png";
   }
@@ -35,7 +36,7 @@ class Carretera {
   }
   update() {
     this.draw(context);
-    this.y = (this.y + this.speedY) % (50 + this.alto);
+    this.y = (this.y + this.speedY) % (10 + this.alto);
   }
 }
 

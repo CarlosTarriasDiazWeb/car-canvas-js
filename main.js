@@ -1,3 +1,5 @@
+// >>>>>>>>> INICIAR PARAMETROS CANVAS
+
 // Creamos canvas para gráficos 2D
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
@@ -16,7 +18,7 @@ let carretera = new Carretera();
 let moneda = new Moneda();
 const NUM_CAMIONES_INIT = 1;
 
-//Establecesmos y dibujamos imagen pixel-art de fondo
+//Establecemos y dibujamos imagen pixel-art de fondo
 var background = new Image();
 background.src = "./background.webp";
 
@@ -24,34 +26,6 @@ background.src = "./background.webp";
 background.onload = function () {
   context.drawImage(background, 0, 0);
 };
-
-//Para calcular la distancia entre el coche y todos los camiones en pantalla.
-function getDistance(camiones, cocheX, cocheY) {
-  const distancias = [];
-  camiones.forEach((cam) =>
-    distancias.push(Math.sqrt(Math.pow(cam.x - cocheX, 2) + Math.pow(cam.y - cocheY, 2)))
-  );
-  //console.log(distancias);
-  return distancias;
-}
-
-function coinCollision(cocheX, cocheY, moneda) {
-  return Math.sqrt(Math.pow(moneda?.x - cocheX, 2) + Math.pow(moneda?.y - cocheY, 2)) < 20;
-}
-
-//Para que el control del coche dependa de la posición del mouse en cada momento.
-canvas.addEventListener("mousemove", (e) => {
-  c1.x = e.clientX + 30;
-  if (e.clientX < 500) c1.x = 500;
-  else if (e.clientX > 950) c1.x = 950;
-});
-
-//Evento para que el canvas no se recorte al modificar tamaño de la ventana.
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  draw();
-});
 
 //Para pintar los objetos del juego.
 let draw = () => {
@@ -70,6 +44,8 @@ let draw = () => {
   for (let i = 0; i < NUM_CAMIONES_INIT; i++) {
     camiones[i].draw(context);
   }
+
+  //Pintamos moneda
   moneda?.draw(context);
 
   //Pintamos el coche.
@@ -82,12 +58,8 @@ let update = () => {
   context.drawImage(background, 0, 0);
   carretera.update();
 
-  context.font = "50px sans-serif";
-  context.fillStyle = "#FFFFFF";
-  context.fillText("Vida", 150, 300);
-  context.fillText(`${c1.hits}`, 180, 360);
-  context.fillText("Puntos", 1200, 300);
-  context.fillText(`${c1.points}`, 1250, 360);
+  //Dibujamos vida y punt. del jugador.
+  dibujarUI();
 
   camiones.forEach((camion) => camion.update());
   moneda?.update();
@@ -109,11 +81,7 @@ let update = () => {
     document.body?.removeChild(canvas);
     guardarUltimaPuntuacion();
     //Pintamos ranking
-    document.body.innerHTML = "<ul>";
-    Array.from(JSON.parse(localStorage?.getItem("score"))).forEach((score, index) => {
-      document.body.innerHTML += `<li>Jugador ${index + 1} : ${score}</li>`;
-    });
-    document.body.innerHTML += "</ul>";
+    mostrarPuntuaciones();
     return;
   }
 
@@ -124,27 +92,23 @@ let update = () => {
 draw();
 update();
 
-//Para añadir camiones al canvas
-const anyadirCamion = () => {
-  if (camiones.length < 5) camiones.push(new Camion());
-};
+// >>>>>>>>>>> EVENT LISTENERS
 
-//Para hacer aparacer/desaparecer la moneda.
-const toggleMoneda = () => {
-  if (moneda != null) moneda = null;
-  else moneda = new Moneda();
-};
+//Para que el control del coche dependa de la posición del mouse en cada momento.
+canvas.addEventListener("mousemove", (e) => {
+  c1.x = e.clientX + 30;
+  if (e.clientX < 500) c1.x = 500;
+  else if (e.clientX > 950) c1.x = 950;
+});
 
-//Para guardar ranking de puntuación.
-const guardarUltimaPuntuacion = () => {
-  let v = JSON.parse(localStorage.getItem("score"));
-  if (localStorage.getItem("score") === null) {
-    localStorage.setItem("score", JSON.stringify([c1.points]));
-  } else {
-    v.push(c1.points);
-    localStorage.setItem("score", JSON.stringify(v));
-  }
-};
+//Evento para que el canvas no se recorte al modificar tamaño de la ventana.
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  draw();
+});
+
+// >>>>>>>>>>> TIMMERS
 
 //Añadimos un nuevo camión cada diez segundos
 setInterval(anyadirCamion, 10000);

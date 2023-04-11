@@ -89,7 +89,6 @@ let update = () => {
   requestAnimationFrame(update);
 };
 
-draw();
 update();
 
 // >>>>>>>>>>> EVENT LISTENERS
@@ -105,7 +104,6 @@ canvas.addEventListener("mousemove", (e) => {
 window.addEventListener("resize", () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  draw();
 });
 
 // >>>>>>>>>>> TIMMERS
